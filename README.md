@@ -1,2 +1,2 @@
 # mirror-way
-JavaScript Project
+A simple web based game developed using JavaScript.
