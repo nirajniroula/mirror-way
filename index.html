@@ -16,13 +16,17 @@
     #divPlay {
       position: relative;
       width: 1200px;
-      margin-top: 20px;
+      margin-top: 160px;
     }
 
     #other-wrap {
-      overflow: auto;
+      overflow: hidden;
       background-color: #2E658C;
       padding: 10px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 5;
     }
 
     #other {
@@ -39,15 +43,23 @@
     }
 
     #other #right #logo {
+      display: flex;
       float: left;
-      font-family: initial;
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
       font-size: 25px;
       color: white;
+      /* background-color: rgb(67, 137, 187); */
+      justify-content: center;
+      padding: 4px;
+      border-radius: 12px;
+      margin-top: 8px;
+      /* border-style: solid 1px white; */
+      text-shadow: #4C3B15;
     }
 
     #other #right #title {
       float: right;
-      font-family: initial;
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
       padding: 10px 0px 0px 400px;
       font-size: 44px;
       color: white;
@@ -60,7 +72,7 @@
 
     #high,
     #level {
-      float: right; 
+      float: right;
       color: white;
       padding: 0px;
       font-size: 15px;
@@ -167,31 +179,24 @@
   <div id="info">
 
     <p>
-      <span class="gidi">WHAT IS MIRROR WAY?</span>
-
-      MIRROR WAY is a simple 'run on track' game, where the player should draw a tracking line remaining with in the track and
-      with mirror effect. Click the PLAY button to start the game.
-
-
-    </p>
-
     <p>
       <span class="gidi">HOW TO PLAY?</span>
-      Take a chance. Pick one of the dumbest and poorest kid from the man kind, from anywhere around the globe, and make a vow
-      to look after all his expenses, take that responsibility, so that the fool shall not have to struggle for his living
-      and then let the kid carry out the task that he/she finds the most important and most interesting in this world in
-      his/her own way and time.
+      MIRROR WAY is a simple 'run on track' game, where the player should draw a tracking line remaining with in the
+      track and
+      with mirror effect. Click the PLAY button to start the game.
     </p>
 
     <p>
       <span class="gidi">DEVELOPED BY </span>
-      Niraj Niroula
+      niniroula@gmail.com
+      </span>
+
     </p>
   </div>
   <div id="foot-wrap">
     <div id="footer">
       <div id="right">
-        🇳🇵 Mirror Way 2015
+        Mirror Way 2015
       </div>
     </div>
   </div>

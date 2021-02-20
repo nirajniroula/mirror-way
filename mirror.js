@@ -502,7 +502,7 @@
       if (pixel[0] === 0 && pixel[1] === 0 && pixel[2] === 0 && pixel[3] === 0) {
         console.log('Game Over');
         isMouseDown = false;
-        alert('Game Over');
+        alert('Game Over!');
         window.location.reload();
       }
     };
@@ -555,7 +555,7 @@
     };
 
     window.onload = checkCookie();
-    window.scrollTo(0, document.body.scrollHeight);
+    // window.scrollTo(0, document.body.scrollHeight);
     init();
 
 
