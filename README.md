@@ -1,7 +1,6 @@
 ## mirror way
 
-MIRROR WAY is a simple 'run on track' game, where the player should draw a tracking line remaining with in the track and with mirror effect. i.e. your "left" direction becomes "right", "up" becomes "down" and so on during the game play.  
-
+MIRROR WAY is a simple 'run on track' game, where the player should draw a tracking line remaining with in the track and with mirror effect. i.e. drawing line on a real track but looking at its reflection.
 ![image](https://user-images.githubusercontent.com/11739133/131484725-7b306c61-ddfb-40de-a40b-a676eee109d4.png)
 
 The project, somehow, is still in progress; there's still place for the things like polishing the UI and working out on collision detection and other minor logical stuffs to make the gameplay better.
