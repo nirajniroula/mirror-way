@@ -11,6 +11,6 @@ https://nirajniroula.github.io/mirror-way/
 
 ### Contributing
 
-All contrioubutions are welcome in any shape or form.
+All contributions are welcome in any shape or form.
 
 
