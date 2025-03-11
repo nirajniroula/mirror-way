@@ -11,6 +11,7 @@ class MirrorPath {
     this.info = new Info("h-value", "l-value");
     this.playFlag = false;
     this.isMouseDown = false;
+    this.mirrorEffectEnabled = true; // Mirror effect is on by default
     this.highScore = 0;
     this.level = 0;
     this.ptX = 0;
@@ -19,6 +20,15 @@ class MirrorPath {
     this.checkpoints; // Initialize checkpoints array
     this.checkpointCount = 0; // Initialize checkpoint count
     this.visitedCheckpoints = new Set(); // Keep track of visited checkpoints
+
+    // Store references to event listeners for cleanup
+    this.eventListeners = {
+      btnClick: null,
+      keyDown: null,
+      keyUp: null,
+      mouseMove: null,
+      mirrorToggle: null,
+    };
 
     this.init();
   }
@@ -40,20 +50,109 @@ class MirrorPath {
     this.checkpoints = null;
     this.checkpointCount = 0; // Initialize checkpoint count
     this.visitedCheckpoints = new Set(); // Keep track of visited checkpoints
+    // Clean up existing listeners
+    this.removeEventListeners();
     this.init(); // Reinitialize game
   }
 
+  // setupEventListeners() {
+  //   document
+  //     .getElementById("btn")
+  //     .addEventListener("click", () => this.startGame());
+  //   this.marker.contextMarker.canvas.addEventListener("mousedown", (event) =>
+  //     this.handleMouseDown(event)
+  //   );
+  //   window.addEventListener("mouseup", () => (this.isMouseDown = false));
+  //   this.marker.contextMarker.canvas.addEventListener("mousemove", (event) =>
+  //     this.handleMouseMove(event)
+  //   );
+  // }
+
   setupEventListeners() {
-    document
-      .getElementById("btn")
-      .addEventListener("click", () => this.startGame());
-    this.marker.contextMarker.canvas.addEventListener("mousedown", (event) =>
-      this.handleMouseDown(event)
+    // Remove existing listeners (if any) to avoid duplicates
+    this.removeEventListeners();
+
+    // Add new listeners and store their references
+    const btn = document.getElementById("btn");
+    if (btn) {
+      this.eventListeners.btnClick = () => this.startGame();
+      btn.addEventListener("click", this.eventListeners.btnClick);
+    }
+
+    this.eventListeners.keyDown = (event) => this.handleKeyDown(event);
+    window.addEventListener("keydown", this.eventListeners.keyDown);
+
+    this.eventListeners.keyUp = (event) => this.handleKeyUp(event);
+    window.addEventListener("keyup", this.eventListeners.keyUp);
+
+    this.eventListeners.mouseMove = (event) => this.handleMouseMove(event);
+    this.marker.contextMarker.canvas.addEventListener(
+      "mousemove",
+      this.eventListeners.mouseMove
     );
-    window.addEventListener("mouseup", () => (this.isMouseDown = false));
-    this.marker.contextMarker.canvas.addEventListener("mousemove", (event) =>
-      this.handleMouseMove(event)
-    );
+
+    const mirrorToggle = document.getElementById("mirror-effect");
+    if (mirrorToggle) {
+      this.eventListeners.mirrorToggle = (event) => {
+        this.mirrorEffectEnabled = event.target.checked;
+        this.restartGame();
+      };
+      mirrorToggle.addEventListener("change", this.eventListeners.mirrorToggle);
+    }
+  }
+
+  removeEventListeners() {
+    const btn = document.getElementById("btn");
+    if (btn && this.eventListeners.btnClick) {
+      btn.removeEventListener("click", this.eventListeners.btnClick);
+    }
+
+    if (this.eventListeners.keyDown) {
+      window.removeEventListener("keydown", this.eventListeners.keyDown);
+    }
+
+    if (this.eventListeners.keyUp) {
+      window.removeEventListener("keyup", this.eventListeners.keyUp);
+    }
+
+    if (this.eventListeners.mouseMove) {
+      this.marker.contextMarker.canvas.removeEventListener(
+        "mousemove",
+        this.eventListeners.mouseMove
+      );
+    }
+
+    const mirrorToggle = document.getElementById("mirror-effect");
+    if (mirrorToggle && this.eventListeners.mirrorToggle) {
+      mirrorToggle.removeEventListener(
+        "change",
+        this.eventListeners.mirrorToggle
+      );
+    }
+
+    // Clear all listener references
+    this.eventListeners = {
+      btnClick: null,
+      keyDown: null,
+      keyUp: null,
+      mouseMove: null,
+      mirrorToggle: null,
+    };
+  }
+
+  handleKeyDown(event) {
+    if (event.code === "Space" && this.playFlag) {
+      event.preventDefault(); // Prevent page scrolling
+      this.isMouseDown = true; // Activate marker movement
+      document.body.style.cursor = "none"; // Hide actual cursor
+    }
+  }
+
+  handleKeyUp(event) {
+    if (event.code === "Space") {
+      this.isMouseDown = false; // Stop marker movement
+      document.body.style.cursor = "default"; // Restore cursor
+    }
   }
 
   startGame() {
@@ -90,7 +189,12 @@ class MirrorPath {
 
   drawLine(x, y) {
     const { x: markX, y: markY } = this.marker.getMarkPos();
-    const markerPos = this.checkMousePos(x, y, this.ptX, this.ptY);
+    let markerPos;
+    if (this.mirrorEffectEnabled) {
+      markerPos = this.checkMouseMirrorPos(x, y, this.ptX, this.ptY);
+    } else {
+      markerPos = this.checkMousePos(x, y, this.ptX, this.ptY);
+    }
 
     // this.checkPoint(markerPos.x, markerPos.y);
     this.checkBoundary(markerPos.x, markerPos.y);
@@ -110,10 +214,28 @@ class MirrorPath {
     this.ptY = y;
   }
 
+  //Without mirror effect
   checkMousePos(currX, currY, preX, preY) {
     let { x: markX, y: markY } = this.marker.getMarkPos();
     markX += Math.sign(currX - preX);
     markY += Math.sign(currY - preY);
+    return { x: markX, y: markY };
+  }
+
+  //With mirror effect
+  checkMouseMirrorPos(currX, currY, preX, preY) {
+    let { x: markX, y: markY } = this.marker.getMarkPos();
+
+    // Apply mirror effect: Flip the X coordinate
+    markX = this.curve.canvas.width - markX; // Flip horizontally
+
+    // Update marker position based on mouse movement
+    markX += Math.sign(currX - preX);
+    markY += Math.sign(currY - preY);
+
+    // Flip the X coordinate back for rendering
+    markX = this.curve.canvas.width - markX;
+
     return { x: markX, y: markY };
   }
 
@@ -171,7 +293,6 @@ class MirrorPath {
   }
 
   showConfetti() {
-    console.log(">>>>>", "confetiii");
     confetti({
       particleCount: 500,
       spread: 360,
