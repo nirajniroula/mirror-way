@@ -55,10 +55,17 @@ export function Timer(canvasId) {
     that.context.stroke();
     that.context.closePath();
 
+    const textX = this.centX - (3 / 2) * this.clkWidth;
+    const textY = this.centY + (3 / 2) * this.clkWidth;
+    const textWidth = 100; // Adjust based on font size
+    const textHeight = 20; // Adjust based on font size
+
+    // Clear the previous text before drawing
+    that.context.clearRect(textX, textY - textHeight, textWidth, textHeight);
     that.context.fillText(
       "Time: " + this.counter + (this.counter < 2 ? " Sec" : " Secs"),
-      this.centX - (3 / 2) * this.clkWidth,
-      this.centY + (3 / 2) * this.clkWidth
+      textX,
+      textY
     );
 
     this.degree += 6; // Increase by 6 degrees (360°/60 seconds = 6° per second)
